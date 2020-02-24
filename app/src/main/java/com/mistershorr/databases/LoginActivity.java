@@ -87,6 +87,10 @@ public class LoginActivity extends AppCompatActivity {
                 {
                     // user has been logged in
                     Toast.makeText(LoginActivity.this, "Welcome " + user.getProperty("username"), Toast.LENGTH_SHORT).show();
+                    Intent goToFriendsList = new Intent(LoginActivity.this, FriendsListActivity.class);
+                    startActivity(goToFriendsList);
+                    finish();
+
                 }
 
                 public void handleFault( BackendlessFault fault )
