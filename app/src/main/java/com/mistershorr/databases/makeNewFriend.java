@@ -2,6 +2,7 @@ package com.mistershorr.databases;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -35,7 +36,8 @@ public class makeNewFriend extends AppCompatActivity {
 
         private Friend contact;
     public static final String EXTRA_FRIEND_PACKAGE = "friend package";
-    public boolean friendMade = false;
+    private boolean update = false;
+
 
 
     @Override
@@ -43,8 +45,14 @@ public class makeNewFriend extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_make_new_friend);
 
+        Intent intent = getIntent();
+        if(intent != null){
+            update = true;
+            contact = intent.getParcelableExtra(FriendsListActivity.EXTRA_FRIEND_PACKAGE);
+        }
+
         wirewidgets();
-        getInformation();
+        setStuff();
         makeFriendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,7 +70,6 @@ public class makeNewFriend extends AppCompatActivity {
                             public void handleResponse( Friend response )
                             {
                                 // new Contact instance has been saved
-                                friendMade = true;
 
                             }
 
@@ -72,12 +79,25 @@ public class makeNewFriend extends AppCompatActivity {
                             }
                         });
                     }
-                }
+                getInformation();
+
+            }
 
         });
 
 
 
+
+    }
+
+    private void setStuff() {
+        if(update){
+            nameEditText.setText(contact.getName());
+            clumsinessSeekBar.setProgress(contact.getClumsiness());
+            awesomeSwitch.setChecked(contact.isAwesome());
+            gymFreqSeekBar.setProgress((int) (contact.getGymFrequency()));
+            trustworthinessRatingBar.setNumStars(contact.getTrustworthiness());
+        }
     }
 
     private void getInformation() {

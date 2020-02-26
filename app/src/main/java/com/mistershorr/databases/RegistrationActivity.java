@@ -78,7 +78,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 // user has been registered and now can login
                 String username = editTextUsername.getText().toString();
                 String password = editTextPassword.getText().toString();
-                Intent registrationCompleteIntent = new Intent();
+                Intent registrationCompleteIntent = new Intent(RegistrationActivity.this, LoginActivity.class);
                 registrationCompleteIntent.putExtra(EXTRA_USERNAME, username);
                 registrationCompleteIntent.putExtra(EXTRA_PASSWORD, password);
                 setResult(RESULT_OK, registrationCompleteIntent);

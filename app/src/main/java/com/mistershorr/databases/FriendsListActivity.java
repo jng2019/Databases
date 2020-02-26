@@ -18,8 +18,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.backendless.Backendless;
+import com.backendless.UserService;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.backendless.persistence.DataQueryBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.InputStream;
@@ -33,6 +35,7 @@ public class FriendsListActivity extends AppCompatActivity {
     private ListView listView;
     private List<Friend> friendList;
     private friendAdapter friendAdapter;
+    public static final String EXTRA_FRIEND_PACKAGE = "friend package";
 
 
     public static final String TAG = FriendsListActivity.class.getSimpleName();
@@ -41,21 +44,63 @@ public class FriendsListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends_list);
 
-        useBackEndLess();
+        String userId = Backendless.UserService.CurrentUser().getObjectId();
+        String whereClause = "ownerId = '" + userId + "'";
+        DataQueryBuilder queryBuilder = DataQueryBuilder.create();
+        queryBuilder.setWhereClause( whereClause);
+
+        useBackEndless(queryBuilder);
+
+
         floatingActionButton = findViewById(R.id.floatingActionButton);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent makeFriends = new Intent(FriendsListActivity.this, makeNewFriend.class);
                 startActivity(makeFriends);
-                if()
+                //if()
 
             }
         });
 
         // verify that it read everything properly
         listView = findViewById(R.id.friendList_listView);
+        // search only for friends that have ownerIds that match the users objectId
 
+
+    }
+    private void setOnItemClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Intent targetIntent = new Intent(FriendsListActivity.this, makeNewFriend.class);//first is from where we are coming from, second one is where we are going
+                targetIntent.putExtra(EXTRA_FRIEND_PACKAGE, friendList.get(position));
+                // launch the new activity
+                startActivity(targetIntent);
+                finish();
+
+            }
+        });
+    }
+
+    private void useBackEndless(DataQueryBuilder queryBuilder) {
+        Backendless.Data.of(Friend.class).find(queryBuilder, new AsyncCallback<List<Friend>>(){
+            @Override
+            public void handleResponse( List<Friend> friendList )
+            {
+                // all Contact instances have been found
+                Log.d(TAG, "handleResponse: " + friendList.toString());
+                friendAdapter = new friendAdapter(friendList);
+                listView.setAdapter(friendAdapter);
+
+            }
+            @Override
+            public void handleFault( BackendlessFault fault )
+            {
+                // an error has occurred, the error code can be retrieved with fault.getCode()
+            }
+        });
     }
 
 
@@ -99,23 +144,6 @@ public class FriendsListActivity extends AppCompatActivity {
             return convertView;
         }
     }
-    private void useBackEndLess(){
-        Backendless.Data.of(Friend.class).find(new AsyncCallback<List<Friend>>(){
-            @Override
-            public void handleResponse( List<Friend> friendList )
-            {
-                // all Contact instances have been found
-                Log.d(TAG, "handleResponse: " + friendList.toString());
-                friendAdapter = new friendAdapter(friendList);
-                listView.setAdapter(friendAdapter);
 
-            }
-            @Override
-            public void handleFault( BackendlessFault fault )
-            {
-                // an error has occurred, the error code can be retrieved with fault.getCode()
-            }
-        });
-    }
 
 }

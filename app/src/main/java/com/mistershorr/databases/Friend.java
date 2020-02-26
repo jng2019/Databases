@@ -3,13 +3,33 @@ package com.mistershorr.databases;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Friend implements Parcelable {
+public class Friend implements Parcelable{
     private int clumsiness;
     private double gymFrequency;
     private boolean isAwesome;
     private double moneyOwed;
     private String name;
     private int trustworthiness;
+    //backendless specific fields
+    //add the getter and setters
+    private String objectID;
+    private String ownerID;
+
+    public String getObjectID() {
+        return objectID;
+    }
+
+    public void setObjectID(String objectID) {
+        this.objectID = objectID;
+    }
+
+    public String getOwnerID() {
+        return ownerID;
+    }
+
+    public void setOwnerID(String ownerID) {
+        this.ownerID = ownerID;
+    }
 
     public Friend() {
     }
@@ -87,6 +107,8 @@ public class Friend implements Parcelable {
         dest.writeDouble(this.moneyOwed);
         dest.writeString(this.name);
         dest.writeInt(this.trustworthiness);
+        dest.writeString(this.objectID);
+        dest.writeString(this.ownerID);
     }
 
     protected Friend(Parcel in) {
@@ -96,6 +118,8 @@ public class Friend implements Parcelable {
         this.moneyOwed = in.readDouble();
         this.name = in.readString();
         this.trustworthiness = in.readInt();
+        this.objectID = in.readString();
+        this.ownerID = in.readString();
     }
 
     public static final Creator<Friend> CREATOR = new Creator<Friend>() {
