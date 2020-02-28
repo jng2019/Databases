@@ -45,19 +45,51 @@ public class makeNewFriend extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_make_new_friend);
 
-        Intent intent = getIntent();
-        if(intent != null){
-            update = true;
-            contact = intent.getParcelableExtra(FriendsListActivity.EXTRA_FRIEND_PACKAGE);
-        }
-
         wirewidgets();
-        setStuff();
+
+        contact = getIntent().getParcelableExtra(FriendsListActivity.EXTRA_FRIEND_PACKAGE);
+        if(contact != null){
+            setStuff();
+            makeFriendButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Backendless.Persistence.save( contact, new AsyncCallback<Friend>() {
+                        public void handleResponse( Friend savedContact )
+                        {
+                            savedContact.setTitle( "Most favorite" );
+                            savedContact.setPhone( "666-666-666" );
+
+                            Backendless.Persistence.save( savedContact, new AsyncCallback<Friend>() {
+                                @Override
+                                public void handleResponse( Friend response )
+                                {
+                                    // Contact instance has been updated
+                                }
+                                @Override
+                                public void handleFault( BackendlessFault fault )
+                                {
+                                    // an error has occurred, the error code can be retrieved with fault.getCode()
+                                }
+                            } );
+                        }
+                        @Override
+                        public void handleFault( BackendlessFault fault )
+                        {
+                            // an error has occurred, the error code can be retrieved with fault.getCode()
+                        }
+                    });
+                }
+            });
+        }
+        else{
+            contact = new Friend();
+            Toast.makeText(makeNewFriend.this, "mike and ike ", Toast.LENGTH_SHORT).show();
+
+        }
         makeFriendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(name != null && clumsiness != 0 && gymFrequency!= 0 && moneyOwed!=0 && trustworthiness!=0){
-                        contact = new Friend();
+                if(name != null && clumsiness != 0 && gymFrequency!= 0 && trustworthiness!=0){
                         contact.setName( name );
                         contact.setClumsiness( clumsiness );
                         contact.setGymFrequency( gymFrequency);
@@ -70,6 +102,8 @@ public class makeNewFriend extends AppCompatActivity {
                             public void handleResponse( Friend response )
                             {
                                 // new Contact instance has been saved
+                                Toast.makeText(makeNewFriend.this, "Friend " + contact.getName() + "has been created", Toast.LENGTH_SHORT).show();
+
 
                             }
 
@@ -79,6 +113,8 @@ public class makeNewFriend extends AppCompatActivity {
                             }
                         });
                     }
+                Toast.makeText(makeNewFriend.this, "Welcome " + contact.getName(), Toast.LENGTH_SHORT).show();
+
                 getInformation();
 
             }
@@ -91,13 +127,13 @@ public class makeNewFriend extends AppCompatActivity {
     }
 
     private void setStuff() {
-        if(update){
             nameEditText.setText(contact.getName());
             clumsinessSeekBar.setProgress(contact.getClumsiness());
             awesomeSwitch.setChecked(contact.isAwesome());
             gymFreqSeekBar.setProgress((int) (contact.getGymFrequency()));
             trustworthinessRatingBar.setNumStars(contact.getTrustworthiness());
-        }
+            editText_MoneyOwed.setText(Double.toString(contact.getMoneyOwed()));
+            makeFriendButton.setText("Update Friend");
     }
 
     private void getInformation() {

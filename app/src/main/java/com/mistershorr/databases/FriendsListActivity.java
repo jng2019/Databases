@@ -36,6 +36,8 @@ public class FriendsListActivity extends AppCompatActivity {
     private List<Friend> friendList;
     private friendAdapter friendAdapter;
     public static final String EXTRA_FRIEND_PACKAGE = "friend package";
+    public static final String EXTRA_UPDATE_PACKAGE = "update package";
+
 
 
     public static final String TAG = FriendsListActivity.class.getSimpleName();
@@ -57,6 +59,7 @@ public class FriendsListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent makeFriends = new Intent(FriendsListActivity.this, makeNewFriend.class);
+                makeFriends.putExtra(EXTRA_FRIEND_PACKAGE, false);
                 startActivity(makeFriends);
                 //if()
 
@@ -69,30 +72,30 @@ public class FriendsListActivity extends AppCompatActivity {
 
 
     }
-    private void setOnItemClickListener() {
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Intent targetIntent = new Intent(FriendsListActivity.this, makeNewFriend.class);//first is from where we are coming from, second one is where we are going
-                targetIntent.putExtra(EXTRA_FRIEND_PACKAGE, friendList.get(position));
-                // launch the new activity
-                startActivity(targetIntent);
-                finish();
-
-            }
-        });
-    }
 
     private void useBackEndless(DataQueryBuilder queryBuilder) {
         Backendless.Data.of(Friend.class).find(queryBuilder, new AsyncCallback<List<Friend>>(){
             @Override
-            public void handleResponse( List<Friend> friendList )
+            public void handleResponse(final List<Friend> friendList )
             {
                 // all Contact instances have been found
                 Log.d(TAG, "handleResponse: " + friendList.toString());
                 friendAdapter = new friendAdapter(friendList);
                 listView.setAdapter(friendAdapter);
+
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                        Intent targetIntent = new Intent(FriendsListActivity.this, makeNewFriend.class);//first is from where we are coming from, second one is where we are going
+                        targetIntent.putExtra(EXTRA_FRIEND_PACKAGE, friendList.get(position));
+                        // launch the new activity
+                        startActivity(targetIntent);
+
+
+                    }
+                });
 
             }
             @Override
