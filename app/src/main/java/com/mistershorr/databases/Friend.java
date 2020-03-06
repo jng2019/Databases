@@ -12,23 +12,23 @@ public class Friend implements Parcelable{
     private int trustworthiness;
     //backendless specific fields
     //add the getter and setters
-    private String objectID;
-    private String ownerID;
+    private String objectId;
+    private String ownerId;
 
-    public String getObjectID() {
-        return objectID;
+    public String getobjectId() {
+        return objectId;
     }
 
-    public void setObjectID(String objectID) {
-        this.objectID = objectID;
+    public void setobjectId(String objectId) {
+        this.objectId = objectId;
     }
 
-    public String getOwnerID() {
-        return ownerID;
+    public String getownerId() {
+        return ownerId;
     }
 
-    public void setOwnerID(String ownerID) {
-        this.ownerID = ownerID;
+    public void setownerId(String ownerId) {
+        this.ownerId = ownerId;
     }
 
     public Friend() {
@@ -107,8 +107,8 @@ public class Friend implements Parcelable{
         dest.writeDouble(this.moneyOwed);
         dest.writeString(this.name);
         dest.writeInt(this.trustworthiness);
-        dest.writeString(this.objectID);
-        dest.writeString(this.ownerID);
+        dest.writeString(this.objectId);
+        dest.writeString(this.ownerId);
     }
 
     protected Friend(Parcel in) {
@@ -118,8 +118,8 @@ public class Friend implements Parcelable{
         this.moneyOwed = in.readDouble();
         this.name = in.readString();
         this.trustworthiness = in.readInt();
-        this.objectID = in.readString();
-        this.ownerID = in.readString();
+        this.objectId = in.readString();
+        this.ownerId = in.readString();
     }
 
     public static final Creator<Friend> CREATOR = new Creator<Friend>() {
