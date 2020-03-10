@@ -49,62 +49,67 @@ public class makeNewFriend extends AppCompatActivity {
                 public void onClick(View view) {
 
                     friend.setName(nameEditText.getText().toString());
-                    friend.setClumsiness(clumsinessSeekBar.getProgress());
+                    friend.setClumsiness(clumsinessSeekBar.getProgress() + 1);
                     friend.setAwesome(awesomeSwitch.isChecked());
                     friend.setGymFrequency(gymFreqSeekBar.getProgress());
                     friend.setTrustworthiness((int)trustworthinessRatingBar.getRating());
                     friend.setMoneyOwed(Double.parseDouble(editText_MoneyOwed.getText().toString()));
 
                     updateContact();
-
-
                 }
 
             });
         }
         else{
             friend = new Friend();
-            Toast.makeText(makeNewFriend.this, "made new friend", Toast.LENGTH_SHORT).show();
 
+            makeFriendButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(!(nameEditText.getText().toString().equals("")) && clumsinessSeekBar.getProgress() != 0){
+                        friend.setownerId(Backendless.UserService.CurrentUser().getObjectId());
+                        if(editText_MoneyOwed.getText().toString().equals("")){
+                            friend.setMoneyOwed(0);
+                        }
+                        else{
+                            friend.setMoneyOwed(Double.parseDouble(editText_MoneyOwed.getText().toString()));
+                        }
+                        friend.setName(  nameEditText.getText().toString() );
+                        friend.setClumsiness( clumsinessSeekBar.getProgress() + 1);
+                        friend.setGymFrequency( gymFreqSeekBar.getProgress());
+                        friend.setAwesome( awesomeSwitch.isChecked());
+                        friend.setTrustworthiness((int) trustworthinessRatingBar.getRating());
+
+                        // save object asynchronously
+                        Backendless.Persistence.save( friend, new AsyncCallback<Friend>() {
+                            public void handleResponse( Friend response )
+                            {
+                                // new Contact instance has been saved
+                                Toast.makeText(makeNewFriend.this, "Friend " + friend.getName() + " has been created", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+
+                            public void handleFault( BackendlessFault fault )
+                            {
+                                Toast.makeText(makeNewFriend.this, fault.getMessage(), Toast.LENGTH_SHORT).show();
+                                // an error has occurred, the error code can be retrieved with fault.getCode()
+                            }
+                        });
+                    }
+                    else {
+                        if (nameEditText.getText().toString().equals("")){
+                            Toast.makeText(makeNewFriend.this, "Please enter a name ", Toast.LENGTH_SHORT).show();
+
+                        }
+                        if (clumsinessSeekBar.getProgress() == 0){
+                            Toast.makeText(makeNewFriend.this, "Please enter a clumsiness ", Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                }
+
+            });
         }
-//        makeFriendButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if(name != null && clumsiness != 0 && gymFrequency!= 0 && trustworthiness!=0){
-//                        contact.setName( name );
-//                        contact.setClumsiness( clumsiness );
-//                        contact.setGymFrequency( gymFrequency);
-//                        contact.setAwesome( isAwesome);
-//                        contact.setMoneyOwed(moneyOwed);
-//                        contact.setTrustworthiness(trustworthiness);
-//
-//                        // save object asynchronously
-//                        Backendless.Persistence.save( contact, new AsyncCallback<Friend>() {
-//                            public void handleResponse( Friend response )
-//                            {
-//                                // new Contact instance has been saved
-//                                Toast.makeText(makeNewFriend.this, "Friend " + contact.getName() + "has been created", Toast.LENGTH_SHORT).show();
-//
-//
-//                            }
-//
-//                            public void handleFault( BackendlessFault fault )
-//                            {
-//                                // an error has occurred, the error code can be retrieved with fault.getCode()
-//                            }
-//                        });
-//                    }
-//                Toast.makeText(makeNewFriend.this, "Welcome " + contact.getName(), Toast.LENGTH_SHORT).show();
-//
-//                getInformation();
-//
-//            }
-//
-//        });
-
-
-
-
     }
 
     private void setStuff() {
@@ -112,7 +117,7 @@ public class makeNewFriend extends AppCompatActivity {
             clumsinessSeekBar.setProgress(friend.getClumsiness());
             awesomeSwitch.setChecked(friend.isAwesome());
             gymFreqSeekBar.setProgress((int) (friend.getGymFrequency()));
-            trustworthinessRatingBar.setNumStars(friend.getTrustworthiness());
+            trustworthinessRatingBar.setRating(friend.getTrustworthiness());
             editText_MoneyOwed.setText(Double.toString(friend.getMoneyOwed()));
             makeFriendButton.setText("Update Friend");
     }
@@ -131,21 +136,10 @@ public class makeNewFriend extends AppCompatActivity {
 
     public void updateContact(){
         Backendless.Persistence.save( friend, new AsyncCallback<Friend>() {
-            public void handleResponse( Friend savedContact )
-            {
-
-                Backendless.Persistence.save( savedContact, new AsyncCallback<Friend>() {
-                    @Override
-                    public void handleResponse( Friend response )
-                    {
-                        // Contact instance has been updated
-                    }
-                    @Override
-                    public void handleFault( BackendlessFault fault )
-                    {
-                        // an error has occurred, the error code can be retrieved with fault.getCode()
-                    }
-                } );
+            public void handleResponse( Friend savedContact ) {
+                //toast and finsih
+                Toast.makeText(makeNewFriend.this, "Friend "  + nameEditText.getText().toString() + " has been updated", Toast.LENGTH_SHORT).show();
+                finish();
             }
             @Override
             public void handleFault( BackendlessFault fault )

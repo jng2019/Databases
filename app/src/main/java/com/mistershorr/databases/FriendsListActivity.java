@@ -1,6 +1,9 @@
 package com.mistershorr.databases;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.OnLifecycleEvent;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,7 +32,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class FriendsListActivity extends AppCompatActivity {
+public class FriendsListActivity extends AppCompatActivity{
 
     private FloatingActionButton floatingActionButton;
     private ListView listView;
@@ -38,6 +41,10 @@ public class FriendsListActivity extends AppCompatActivity {
     public static final String EXTRA_FRIEND_PACKAGE = "friend package";
     public static final String EXTRA_UPDATE_PACKAGE = "update package";
 
+
+    // TODO MAKE THE ISAWESOME BUG IN BACKENDLESS FIX
+    // TODO DO THE DELETE AND THE SET SEEKBARS TO WORK
+    // TODO MAKE THE DELETE AND THE LOGOUT STUFF WORK AND SORT THINGS
 
 
     public static final String TAG = FriendsListActivity.class.getSimpleName();
@@ -72,6 +79,18 @@ public class FriendsListActivity extends AppCompatActivity {
 
 
     }
+    @Override
+    public void onResume(){
+        super.onResume();
+        String userId = Backendless.UserService.CurrentUser().getObjectId();
+        String whereClause = "ownerId = '" + userId + "'";
+        DataQueryBuilder queryBuilder = DataQueryBuilder.create();
+        queryBuilder.setWhereClause( whereClause);
+
+        useBackEndless(queryBuilder);
+    }
+
+
 
 
     private void useBackEndless(DataQueryBuilder queryBuilder) {
