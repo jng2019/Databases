@@ -2,8 +2,10 @@ package com.mistershorr.databases;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -110,6 +112,8 @@ public class makeNewFriend extends AppCompatActivity {
 
             });
         }
+        ActionBar actionBar = getActionBar();
+        getActionBar().setHomeButtonEnabled(true);
     }
 
     private void setStuff() {
@@ -122,6 +126,12 @@ public class makeNewFriend extends AppCompatActivity {
             makeFriendButton.setText("Update Friend");
     }
 
+    public boolean onOptionsItemSelected(MenuItem item){
+        Intent myIntent = new Intent(makeNewFriend.this, FriendsListActivity.class);
+        startActivity(myIntent);
+        finish();
+        return true;
+    }
 
 
     private void wirewidgets() {

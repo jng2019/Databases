@@ -6,7 +6,7 @@ import android.os.Parcelable;
 public class Friend implements Parcelable{
     private int clumsiness;
     private double gymFrequency;
-    private boolean isAwesome;
+    private boolean awesome;
     private double moneyOwed;
     private String name;
     private int trustworthiness;
@@ -51,11 +51,11 @@ public class Friend implements Parcelable{
     }
 
     public boolean isAwesome() {
-        return isAwesome;
+        return awesome;
     }
 
-    public void setAwesome(boolean awesome) {
-        isAwesome = awesome;
+    public void setAwesome(boolean isawesome) {
+        awesome = isawesome;
     }
 
     public double getMoneyOwed() {
@@ -87,7 +87,7 @@ public class Friend implements Parcelable{
         return "Friend{" +
                 "clumsiness=" + clumsiness +
                 ", gymFrequency=" + gymFrequency +
-                ", isAwesome=" + isAwesome +
+                ", isAwesome=" + awesome +
                 ", moneyOwed=" + moneyOwed +
                 ", name='" + name + '\'' +
                 ", trustworthiness=" + trustworthiness +
@@ -103,7 +103,7 @@ public class Friend implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.clumsiness);
         dest.writeDouble(this.gymFrequency);
-        dest.writeByte(this.isAwesome ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.awesome ? (byte) 1 : (byte) 0);
         dest.writeDouble(this.moneyOwed);
         dest.writeString(this.name);
         dest.writeInt(this.trustworthiness);
@@ -114,7 +114,7 @@ public class Friend implements Parcelable{
     protected Friend(Parcel in) {
         this.clumsiness = in.readInt();
         this.gymFrequency = in.readDouble();
-        this.isAwesome = in.readByte() != 0;
+        this.awesome = in.readByte() != 0;
         this.moneyOwed = in.readDouble();
         this.name = in.readString();
         this.trustworthiness = in.readInt();

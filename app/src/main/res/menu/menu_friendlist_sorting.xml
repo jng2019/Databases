@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_heroesList_sort_by_name"
+        android:title="Sort by name" />
+    <item
+        android:id="@+id/action_heroeslist_sort_moneyowed"
+        android:title="Sort by Money Owed" />
+    <item
+        android:id="@+id/logout_friendlist"
+        android:title="Logout" />
+</menu>
